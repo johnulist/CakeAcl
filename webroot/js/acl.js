@@ -10,6 +10,9 @@
      */
     $(document).ready(function () {
         acos = $('.cakeacl-aco-container');
+        $('.cakeacl-node-toggle').live('click', function(){
+            toggleNode($(this));
+        });
         checkNextAco();
     });
 
@@ -49,7 +52,7 @@
             type: 'post',
             data: {aco: aco, aro: aro},
             error: function(jqXHR, textStatus, errorThrown){
-                aroContainer.html(getHtml('error').attr({'title': errorThrown}));
+                aroContainer.html(getHtml('error').attr({title: errorThrown}));
                 checkNextAco();
             },
             success: function(result){
@@ -75,15 +78,36 @@
                 html = $('<span>').attr({class: 'label label-important'}).html('error');
                 break;
             case 'allowed':
-                html = $('<button>').attr({class: 'btn btn-success btn-mini'})
+                html = $('<button>').attr({class: 'btn btn-success btn-mini cakeacl-node-toggle'})
                     .html($('<i>').attr({class: 'icon icon-white icon-ok'}));
                 break;
             case 'denied':
-                html = $('<button>').attr({class: 'btn btn-danger btn-mini'})
+                html = $('<button>').attr({class: 'btn btn-danger btn-mini cakeacl-node-toggle'})
                     .html($('<i>').attr({class: 'icon icon-white icon-ban-circle'}));
                 break;
         }
         return html;
+    }
+
+    function toggleNode(btn){
+        btn.attr('disabled', 'disabled');
+        var aco = btn.closest('.cakeacl-aco-container').attr('data-aco');
+        var aroContainer = btn.closest('.cakeacl-aro-container');
+        var aro = aroContainer.attr('data-aro');
+
+        $.ajax({
+            url: cakeAcl.webroot + 'cake_acl/permissions/node',
+            type: 'post',
+            data: {aco: aco, aro: aro, toggle: true},
+            error: function(jqXHR, textStatus, errorThrown){
+                aroContainer.html(getHtml('error').attr({title: errorThrown}));
+                checkNextAco();
+            },
+            success: function(result){
+                aroContainer.html(getHtml(result == 1 ? 'allowed' : 'denied'));
+                btn.removeAttr('disabled');
+            }
+        });
     }
 
 

@@ -64,9 +64,27 @@ class PermissionsController extends CakeAclAppController {
     public function node(){
         $this->autoRender = false;
         list($model, $id) = explode('.', $this->request->data['aro']);
-        $check = $this->Acl->check(array(
-            $model => array('id' => $id)
-        ), $this->request->data('aco'));
+        $aro = array($model => array('id' => $id));
+
+        # check the current state
+        $check = $this->Acl->check($aro, $this->request->data('aco'));
+
+        # if the toggle parameter has been set, we have to toggle the state
+        if ($this->request->data('toggle')){
+            # current state: allowed -> toggle to deny
+            if ($check){
+                if(!$this->Acl->deny($aro, $this->request->data('aco'))){
+                    throw new InternalErrorException('Could not update node');
+                }
+            }
+            #current state: denied -> toggle to allow
+            else {
+                if(!$this->Acl->allow($aro, $this->request->data('aco'))){
+                    throw new InternalErrorException('Could not update node');
+                }
+            }
+            $check = !$check;
+        }
         return $check ? 1 : 0;
     }
 
