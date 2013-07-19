@@ -45,7 +45,7 @@ class PermissionsController extends CakeAclAppController {
         $this->Paginator->settings = array(
             'fields' => array('id', $labelField),
             'recursive' => -1,
-            'limit' => 1
+            'limit' => Configure::read('CakeAcl.limit')
         );
         $aros = $this->Paginator->paginate($this->{$model}->alias);
         $acos = $this->Acl->Aco->find('all', array(

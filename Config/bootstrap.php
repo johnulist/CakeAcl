@@ -7,3 +7,4 @@ Configure::write('CakeAcl.models', array(
         'labelField' => 'id'
     )
 ));
+Configure::write('CakeAcl.limit', 4);
