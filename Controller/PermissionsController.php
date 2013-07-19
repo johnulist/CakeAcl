@@ -48,6 +48,7 @@ class PermissionsController extends CakeAclAppController {
             'limit' => Configure::read('CakeAcl.limit')
         );
         $aros = $this->Paginator->paginate($this->{$model}->alias);
+
         $acos = $this->Acl->Aco->find('all', array(
             'order' => 'Aco.lft ASC',
             'recursive' => -1
@@ -58,6 +59,15 @@ class PermissionsController extends CakeAclAppController {
 
     public function drop(){
         $this->set('title_for_layout', 'Drop Permissions');
+    }
+
+    public function node(){
+        $this->autoRender = false;
+        list($model, $id) = explode('.', $this->request->data['aro']);
+        $check = $this->Acl->check(array(
+            $model => array('id' => $id)
+        ), $this->request->data('aco'));
+        return $check ? 1 : 0;
     }
 
 }

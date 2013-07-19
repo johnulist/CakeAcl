@@ -8,3 +8,4 @@ Configure::write('CakeAcl.models', array(
     )
 ));
 Configure::write('CakeAcl.limit', 4);
+Configure::write('CakeAcl.jQuery', true);
