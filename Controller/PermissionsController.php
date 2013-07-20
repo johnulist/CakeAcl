@@ -59,6 +59,17 @@ class PermissionsController extends CakeAclAppController {
 
     public function drop(){
         $this->set('title_for_layout', 'Drop Permissions');
+
+        # truncate the table
+        if ($this->request->is('post')){
+            if ($this->Acl->Aro->Permission->deleteAll(array('1=1'))){
+                $this->Session->setFlash('The permissions have been cleared successfully', 'default', array(), 'success');
+                $this->redirect(array('plugin' => 'cake_acl', 'controller' => 'permissions', 'action' => 'manage'));
+            } else {
+                $this->Session->setFlash('The permissions could not be cleared', 'default', array(), 'error');
+            }
+        }
+
     }
 
     public function node(){
